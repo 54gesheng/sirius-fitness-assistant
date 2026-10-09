@@ -138,19 +138,6 @@
     .page-heading h2 { margin: 0; font-size: 22px; line-height: 1.2; }
     .page-heading p { margin: 5px 0 0; color: var(--muted); }
     .eyebrow { color: var(--green); font-size: 12px; font-weight: 700; margin-bottom: 5px; }
-    .demo-notice {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 10px 12px;
-      margin-bottom: 18px;
-      color: #6b531d;
-      background: var(--yellow-soft);
-      border-left: 3px solid var(--yellow);
-    }
-    .demo-notice[hidden] { display: none; }
-    .demo-notice button { border: 0; color: #6b531d; background: transparent; font-weight: 700; }
 
     .metrics {
       display: grid;
@@ -373,7 +360,6 @@
     .data-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
     .data-table tr:last-child td { border-bottom: 0; }
     .tag { display: inline-block; padding: 2px 7px; border-radius: 10px; background: var(--green-soft); color: var(--green); font-size: 11px; font-weight: 700; }
-    .tag.demo { background: var(--yellow-soft); color: #72591c; }
     .export-row { display: flex; flex-wrap: wrap; gap: 8px; }
     .summary-copy { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
     .summary-copy li { padding: 11px 12px; background: var(--surface); border-left: 3px solid var(--green); }
@@ -481,11 +467,6 @@
     </div>
 
     <main class="page">
-      <div class="demo-notice" id="demoNotice">
-        <span>趋势图含示例历史数据，10月7日的 74kg、20.1% 和 91cm 是你的真实基线。</span>
-        <button type="button" id="clearDemo">清除示例</button>
-      </div>
-
       <section class="view" id="view-overview">
         <div class="page-heading">
           <div>
@@ -863,38 +844,10 @@
 
     function seedState() {
       const today = new Date();
-      const records = [];
-      for (let offset = 27; offset >= 1; offset -= 2) {
-        const d = new Date(today);
-        d.setDate(d.getDate() - offset);
-        const progress = (27 - offset) / 27;
-        records.push({
-          id: `demo-${offset}`,
-          date: dateKey(d),
-          weight: round(75.4 - 1.25 * progress + Math.sin(offset * 1.4) * 0.16),
-          bodyFat: round(20.9 - 0.72 * progress + Math.cos(offset) * 0.08),
-          waist: round(92.4 - 1.25 * progress),
-          sleep: round(7.1 + Math.sin(offset) * 0.35),
-          steps: Math.round(4700 + progress * 600 + (offset % 5) * 120),
-          energy: 3,
-          soreness: 2,
-          note: "示例历史记录",
-          source: "demo"
-        });
-      }
-      records.push({ id: "baseline", date: BASELINE_DATE, weight: 74, bodyFat: 20.1, waist: 91, muscleMass: null, skeletalMuscle: null, visceralFat: null, bodyWater: null, bmr: 1550, sleep: 7.5, steps: 5000, energy: 3, soreness: 2, note: "当前真实基线", source: "baseline" });
-
-      const workouts = [];
-      for (let weeksAgo = 3; weeksAgo >= 1; weeksAgo--) {
-        for (const day of [1, 3, 5, 0]) {
-          const d = dateForWeekday(day, -weeksAgo);
-          workouts.push({ id: `demo-workout-${weeksAgo}-${day}`, date: dateKey(d), planKey: trainingPlan[day].key, completed: true, source: "demo" });
-        }
-      }
       return {
         profile: { name: "Sirius", sex: "男", age: 34, height: 180, startDate: PROGRAM_START_DATE, startWeight: 74, targetWeight: 72.2, targetBodyFat: 18.1, targetWaist: 88.5, stepsTarget: 6500, waterTarget: 2500 },
-        records,
-        workouts,
+        records: [{ id: "baseline", date: BASELINE_DATE, weight: 74, bodyFat: 20.1, waist: 91, muscleMass: null, skeletalMuscle: null, visceralFat: null, bodyWater: null, bmr: 1550, sleep: null, steps: null, energy: null, soreness: null, note: "用户提供的初始基线", source: "baseline" }],
+        workouts: [],
         meals: [],
         water: {},
         meta: { lastBackup: null },
@@ -902,11 +855,32 @@
       };
     }
 
+    function removeDemoData(data) {
+      data.records = data.records.filter(record => record.source !== "demo");
+      const baseline = data.records.find(record => record.id === "baseline" && record.source === "baseline" && record.note === "当前真实基线");
+      if (baseline) {
+        if (baseline.sleep === 7.5) baseline.sleep = null;
+        if (baseline.steps === 5000) baseline.steps = null;
+        if (baseline.energy === 3) baseline.energy = null;
+        if (baseline.soreness === 2) baseline.soreness = null;
+        baseline.note = "用户提供的初始基线";
+      }
+      if (!Array.isArray(data.workouts)) data.workouts = [];
+      data.workouts = data.workouts.filter(workout => workout.source !== "demo");
+      return data;
+    }
+
     function loadState() {
       try {
         const saved = JSON.parse(localStorage.getItem(STORE_KEY));
         if (!saved?.profile || !Array.isArray(saved.records)) return seedState();
+        const original = JSON.stringify(saved);
         if (saved.profile.startDate === BASELINE_DATE) saved.profile.startDate = PROGRAM_START_DATE;
+        removeDemoData(saved);
+        if (JSON.stringify(saved) !== original) {
+          try { localStorage.setItem(STORE_KEY, JSON.stringify(saved)); }
+          catch (error) { console.warn("演示记录已从当前视图移除，但尚未写回本地存储。", error); }
+        }
         return saved;
       } catch (error) {
         console.warn("无法读取本地数据，已恢复初始状态。", error);
@@ -954,7 +928,6 @@
       const completed = state.workouts.filter(workout => parseDate(workout.date) >= start && workout.source !== "demo" && workout.completed);
       return [...new Map(completed.map(workout => [`${workout.date}-${workout.planKey}`, workout])).values()];
     }
-    function hasDemoData() { return state.records.some(record => record.source === "demo") || state.workouts.some(workout => workout.source === "demo"); }
     function isPlanDone(day) {
       const date = dateKey(dateForWeekday(day));
       return state.workouts.some(workout => workout.date === date && workout.planKey === trainingPlan[day].key && workout.completed);
@@ -976,7 +949,6 @@
       const cycleDay = Math.floor((today - cycleStart) / 86400000) + 1;
       $("#cycleLabel").textContent = cycleDay < 1 ? `四周减脂周期 · ${formatDate(state.profile.startDate)}开始` : `四周减脂周期 · 第 ${cycleDay} 天`;
       $("#todayLabel").textContent = new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric", weekday: "long" }).format(today);
-      $("#demoNotice").hidden = !hasDemoData();
       $("#metricSelect").value = state.ui.metric || "weight";
       document.title = `${dayNames[today.getDay()]} ${trainingPlan[today.getDay()].title} · Sirius 备战奥运｜薄肌计划`;
     }
@@ -1172,7 +1144,7 @@
       $("#summaryTraining").textContent = `${workoutsThisWeek().length} / 6`;
 
       const records = [...sortedRecords()].reverse();
-      $("#recordsBody").innerHTML = records.map(record => `<tr><td>${formatDate(record.date)}</td><td><span class="tag ${record.source === "demo" ? "demo" : ""}">${record.source === "demo" ? "示例" : record.source === "baseline" ? "基线" : "真实"}</span></td><td class="num">${record.weight?.toFixed(1) ?? "—"} kg</td><td class="num">${record.bodyFat?.toFixed(1) ?? "—"}%</td><td class="num">${record.waist?.toFixed(1) ?? "—"} cm</td><td class="num">${record.muscleMass?.toFixed(1) ?? "—"} kg</td><td class="num">${record.skeletalMuscle?.toFixed(1) ?? "—"}%</td><td class="num">${record.visceralFat ?? "—"}</td><td class="num">${record.bodyWater?.toFixed(1) ?? "—"}%</td><td class="num">${record.bmr?.toLocaleString() ?? "—"}</td><td class="num">${record.sleep?.toFixed(1) ?? "—"} h</td><td class="num">${record.steps?.toLocaleString() ?? "—"}</td><td>${record.source === "demo" ? "" : `<button class="text-action" type="button" data-edit-record="${record.id}">编辑</button>${record.id !== "baseline" ? `<button class="text-action" type="button" data-delete-record="${record.id}">删除</button>` : ""}`}</td></tr>`).join("");
+      $("#recordsBody").innerHTML = records.map(record => `<tr><td>${formatDate(record.date)}</td><td><span class="tag">${record.source === "baseline" ? "基线" : "真实"}</span></td><td class="num">${record.weight?.toFixed(1) ?? "—"} kg</td><td class="num">${record.bodyFat?.toFixed(1) ?? "—"}%</td><td class="num">${record.waist?.toFixed(1) ?? "—"} cm</td><td class="num">${record.muscleMass?.toFixed(1) ?? "—"} kg</td><td class="num">${record.skeletalMuscle?.toFixed(1) ?? "—"}%</td><td class="num">${record.visceralFat ?? "—"}</td><td class="num">${record.bodyWater?.toFixed(1) ?? "—"}%</td><td class="num">${record.bmr?.toLocaleString() ?? "—"}</td><td class="num">${record.sleep?.toFixed(1) ?? "—"} h</td><td class="num">${record.steps?.toLocaleString() ?? "—"}</td><td><button class="text-action" type="button" data-edit-record="${record.id}">编辑</button>${record.id !== "baseline" ? `<button class="text-action" type="button" data-delete-record="${record.id}">删除</button>` : ""}</td></tr>`).join("");
       $$('[data-edit-record]').forEach(button => button.addEventListener("click", () => openCheckinDialog(state.records.find(record => record.id === button.dataset.editRecord))));
       $$('[data-delete-record]').forEach(button => button.addEventListener("click", () => {
         state.records = state.records.filter(record => record.id !== button.dataset.deleteRecord);
@@ -1214,7 +1186,7 @@
       }[metric];
       const cutoff = range === "all" ? null : new Date(Date.now() - Number(range) * 86400000);
       const data = sortedRecords().filter(record => record[metric] != null && (!cutoff || parseDate(record.date) >= cutoff));
-      $("#chartCaption").textContent = `${range === "all" ? "全部记录" : `最近${range}天`} · ${config.label}`;
+      $("#chartCaption").textContent = `${range === "all" ? "全部记录" : `最近${range}天`} · ${config.label}${data.length === 1 ? " · 仅1条记录，尚无趋势" : ""}`;
       const width = Math.max(320, frame.clientWidth - 12);
       const height = window.innerWidth < 620 ? 250 : 286;
       const margin = { top: 18, right: 22, bottom: 38, left: 52 };
@@ -1384,7 +1356,6 @@
         state.records.push(record);
         saveState(); $("#checkinDialog").close(); renderAll();
       });
-      $("#clearDemo").addEventListener("click", () => { state.records = state.records.filter(record => record.source !== "demo"); state.workouts = state.workouts.filter(workout => workout.source !== "demo"); saveState(); renderAll(); });
       $("#exportJson").addEventListener("click", exportJson);
       $("#exportTop").addEventListener("click", exportJson);
       $("#exportCsv").addEventListener("click", exportCsv);
@@ -1401,7 +1372,7 @@
         try {
           const imported = JSON.parse(await file.text());
           if (!imported.profile || !Array.isArray(imported.records) || !Array.isArray(imported.workouts) || !Array.isArray(imported.meals)) throw new Error("数据结构不完整");
-          state = imported;
+          state = removeDemoData(imported);
           state.water ||= {}; state.meta ||= { lastBackup: null }; state.ui ||= { metric: "weight", range: "30", selectedTrainingDay: new Date().getDay(), lastOpenedDate: dateKey() };
           syncToday(); saveState(); renderAll();
         } catch (error) { alert(`导入失败：${error.message}`); }
@@ -1419,6 +1390,8 @@
       console.assert([1, 3, 5].every(day => trainingPlan[day].exercises.every(exercise => exercise[1].startsWith("4 ×"))), "力量组数应为每动作4组");
       console.assert(trainingPlan[3].exercises[3][0] === "坐姿悬垂举腿", "周三动作未更新");
       console.assert(weekOrder.every(day => weeklyMenu[day].meals.length >= 2), "每周菜单有空缺");
+      const migrated = removeDemoData({ records: [{ source: "demo" }, { id: "real", source: "user" }], workouts: [{ source: "demo" }, { source: "user" }] });
+      console.assert(migrated.records.length === 1 && migrated.records[0].id === "real" && migrated.workouts.length === 1 && migrated.workouts[0].source === "user", "示例清理误删真实记录");
     }
 
     syncToday();
