@@ -324,6 +324,25 @@
     }
     .textarea { min-height: 84px; resize: vertical; }
     .training-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 13px; }
+    .exercise-log { padding: 15px 0; border-top: 1px solid var(--line); }
+    .exercise-log:first-child { border-top: 0; padding-top: 0; }
+    .exercise-log-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-bottom: 9px; }
+    .exercise-log-head strong { font-size: 15px; }
+    .exercise-log-head small, .exercise-last { color: var(--muted); font-size: 12px; }
+    .set-grid { display: grid; grid-template-columns: 35px minmax(0, 1fr) minmax(0, 1fr); gap: 7px 9px; align-items: center; }
+    .set-grid > span { color: var(--muted); font-size: 12px; }
+    .set-grid .input { min-width: 0; }
+    .exercise-last { margin: 8px 0 0; }
+    .workout-history { display: grid; gap: 8px; }
+    .workout-history details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 11px 13px; }
+    .workout-history summary { cursor: pointer; font-weight: 650; }
+    .workout-history summary small { float: right; color: var(--muted); font-weight: 400; }
+    .workout-history ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); }
+    .workout-history li + li { margin-top: 5px; }
+    .finish-message { margin: 0 0 15px; color: var(--muted); }
+    .finish-stamp { padding: 18px; border-left: 4px solid var(--green); background: var(--green-soft); }
+    .finish-stamp strong { display: block; font-size: 19px; }
+    .finish-stamp span { color: var(--muted); }
     .note-box { padding: 14px 15px; color: #594716; background: var(--yellow-soft); border-left: 3px solid var(--yellow); }
     .note-box strong { display: block; margin-bottom: 4px; }
     .rule-list { margin: 0; padding-left: 18px; color: var(--muted); }
@@ -441,6 +460,8 @@
       .week-strip { grid-template-columns: repeat(4, 1fr); }
       .day-button { min-height: 66px; }
       .exercise-table th:nth-child(3), .exercise-table td:nth-child(3) { display: none; }
+      .exercise-log-head { flex-direction: column; gap: 2px; }
+      .workout-history summary small { float: none; display: block; }
       .portion-grid, .form-grid { grid-template-columns: 1fr; }
       .field.full { grid-column: auto; }
       .meal-row { grid-template-columns: 54px 1fr; }
@@ -599,7 +620,7 @@
 
       <section class="view" id="view-training" hidden>
         <div class="page-heading">
-          <div><div class="eyebrow">第一个四周周期</div><h2>训练计划与打卡</h2><p>每次4个动作、12个正式组，控制在60分钟内。</p></div>
+          <div><div class="eyebrow">第一个四周周期</div><h2>训练计划与打卡</h2><p>每次4个动作、每个动作4组；组间按需休息，约60分钟。</p></div>
         </div>
         <div class="week-strip" id="trainingWeek"></div>
         <div class="training-layout">
@@ -612,10 +633,10 @@
             <section class="module">
               <div class="module-head"><div><h3>加重规则</h3><p>先把次数做满，再增加重量</p></div></div>
               <ol class="rule-list">
-                <li>动作达到规定次数上限，例如 10、10、10。</li>
-                <li>下一次增加约2%–5%的重量。</li>
-                <li>连续两次明显退步，下次减重约10%。</li>
-                <li>前四周不增加动作和正式组。</li>
+                <li>四组都达到次数上限，动作稳定且还可多做约1–2次，下次加最小一档。</li>
+                <li>上肢约加2%–5%，下肢约加2.5%–5%；加重后从次数下限重新做起。</li>
+                <li>没有达到上限就先增加次数；睡眠差或周日篮球影响恢复时维持重量。</li>
+                <li>坐姿悬垂举腿先把四组次数做满，再加小负重或放慢离心。</li>
               </ol>
             </section>
             <section class="module">
@@ -629,6 +650,10 @@
             </section>
           </aside>
         </div>
+        <section class="module" style="margin-top:24px">
+          <div class="module-head"><div><h3>训练打卡记录</h3><p>每次完成都会单独保存，可展开回看各组数据</p></div></div>
+          <div class="workout-history" id="workoutHistory"></div>
+        </section>
       </section>
 
       <section class="view" id="view-diet" hidden>
@@ -777,6 +802,15 @@
     </form>
   </dialog>
 
+  <dialog id="workoutDoneDialog">
+    <div class="dialog-head"><h3>本次训练完成</h3><button class="dialog-close" type="button" data-close="workoutDoneDialog" aria-label="关闭">×</button></div>
+    <div class="dialog-body">
+      <p class="finish-message">训练数据已保存到本机。需要云端副本，可分享打卡文件并存入 iCloud 或“文件”。</p>
+      <div class="finish-stamp"><strong id="workoutDoneTitle"></strong><span id="workoutDoneSummary"></span></div>
+    </div>
+    <div class="dialog-actions"><button class="btn" type="button" id="shareWorkout">分享打卡文件</button><button class="btn btn-primary" type="button" data-close="workoutDoneDialog">完成</button></div>
+  </dialog>
+
   <dialog id="mealDialog">
     <form id="mealForm">
       <div class="dialog-head"><h3>记录一餐</h3><button class="dialog-close" type="button" data-close="mealDialog" aria-label="关闭">×</button></div>
@@ -814,25 +848,25 @@
     const mean = values => values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null;
 
     const trainingPlan = {
-      1: { key: "upper-a", title: "上肢 A", meta: "约55分钟 · 12个正式组", type: "strength", exercises: [
-        ["平板哑铃卧推", "3 × 6–10", "保留2次余力"],
-        ["高位下拉", "3 × 8–12", "胸口抬起"],
-        ["坐姿绳索划船", "3 × 8–12", "肩胛自然回收"],
-        ["哑铃或绳索侧平举", "3 × 12–20", "控制摆动"]
+      1: { key: "upper-a", title: "上肢 A", meta: "约60分钟 · 16个正式组", type: "strength", exercises: [
+        ["平板哑铃卧推", "4 × 6–10", "保留2次余力"],
+        ["高位下拉", "4 × 8–12", "胸口抬起"],
+        ["坐姿绳索划船", "4 × 8–12", "肩胛自然回收"],
+        ["哑铃或绳索侧平举", "4 × 12–20", "控制摆动"]
       ]},
       2: { key: "cardio-a", title: "空腹有氧", meta: "30–35分钟 · 轻中等强度", type: "cardio", exercises: [["坡度走、椭圆机或单车", "30–35分钟", "能完整说话"], ["饮水", "300–500ml", "咖啡可选"]]},
-      3: { key: "lower", title: "下肢", meta: "约60分钟 · 12个正式组", type: "strength", exercises: [
-        ["哈克深蹲", "3 × 6–10", "全脚掌发力"],
-        ["罗马尼亚硬拉", "3 × 8–12", "髋部后移"],
-        ["腿弯举", "3 × 10–15", "顶端停顿"],
-        ["保加利亚分腿蹲", "每侧 3 × 8–12", "时间不足换腿举"]
+      3: { key: "lower", title: "下肢", meta: "约60分钟 · 16个正式组", type: "strength", exercises: [
+        ["哈克深蹲", "4 × 6–10", "全脚掌发力"],
+        ["罗马尼亚硬拉", "4 × 8–12", "髋部后移"],
+        ["腿弯举", "4 × 10–15", "顶端停顿"],
+        ["坐姿悬垂举腿", "4 × 10–15", "自重填0kg，控制摆动"]
       ]},
       4: { key: "recovery", title: "恢复日", meta: "完成日常步数", type: "rest", exercises: [["步行", "6500步以上", "分散完成"], ["体态练习", "约8分钟", "不过度拉伸"]]},
-      5: { key: "full-b", title: "全身 B", meta: "约55分钟 · 12个正式组", type: "strength", exercises: [
-        ["上斜哑铃卧推", "3 × 8–12", "保留2次余力"],
-        ["胸托划船或器械划船", "3 × 8–12", "避免耸肩"],
-        ["腿举", "3 × 10–15", "保留3次余力"],
-        ["反向飞鸟或绳索面拉", "3 × 12–20", "隔周轮换"]
+      5: { key: "full-b", title: "全身 B", meta: "约60分钟 · 16个正式组", type: "strength", exercises: [
+        ["上斜哑铃卧推", "4 × 8–12", "保留2次余力"],
+        ["胸托划船或器械划船", "4 × 8–12", "避免耸肩"],
+        ["腿举", "4 × 10–15", "保留3次余力"],
+        ["反向飞鸟或绳索面拉", "4 × 12–20", "隔周轮换"]
       ]},
       6: { key: "cardio-b", title: "空腹有氧", meta: "25–30分钟 · 为篮球留恢复", type: "cardio", exercises: [["坡度走、椭圆机或单车", "25–30分钟", "强度3–4/10"], ["早餐", "有氧后正常吃", "优先蛋白质"]]},
       0: { key: "basketball", title: "全场篮球", meta: "18:00–20:00 · 上场约1小时", type: "basketball", exercises: [["赛前补充", "香蕉＋两片面包", "提前60–90分钟"], ["全场篮球", "约60分钟", "充分补水"], ["赛后晚餐", "蛋白质＋主食＋蔬菜", "不需要暴食"]]}
@@ -986,6 +1020,7 @@
     }
 
     let state = loadState();
+    let recentWorkout = null;
     function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
     function syncToday() {
       state.ui ||= { metric: "weight", range: "30" };
@@ -1021,7 +1056,8 @@
     }
     function workoutsThisWeek() {
       const start = startOfWeek();
-      return state.workouts.filter(workout => parseDate(workout.date) >= start && workout.source !== "demo" && workout.completed);
+      const completed = state.workouts.filter(workout => parseDate(workout.date) >= start && workout.source !== "demo" && workout.completed);
+      return [...new Map(completed.map(workout => [`${workout.date}-${workout.planKey}`, workout])).values()];
     }
     function hasDemoData() { return state.records.some(record => record.source === "demo") || state.workouts.some(workout => workout.source === "demo"); }
     function isPlanDone(day) {
@@ -1115,52 +1151,103 @@
       }));
     }
 
-    function workoutForSelectedDay(day) {
-      const date = dateKey(dateForWeekday(day));
-      return state.workouts.find(workout => workout.date === date && workout.planKey === trainingPlan[day].key && workout.source !== "demo");
-    }
-
     function renderTraining() {
       const day = Number(state.ui.selectedTrainingDay);
       const plan = trainingPlan[day];
       const date = dateKey(dateForWeekday(day));
-      const existing = workoutForSelectedDay(day);
+      const draftKey = `${date}-${plan.key}`;
+      const draft = state.workoutDrafts?.[draftKey];
       $("#selectedTrainingTitle").textContent = `${dayNames[day]} · ${plan.title}`;
       $("#selectedTrainingMeta").textContent = `${formatFullDate(date)} · ${plan.meta}`;
+      renderWorkoutHistory();
 
       if (plan.type === "rest") {
         $("#trainingFormArea").innerHTML = `<div class="empty">今天不安排正式训练。完成6500步和8分钟体态练习即可。</div>`;
         return;
       }
 
-      const savedExercises = existing?.exercises || [];
-      $("#trainingFormArea").innerHTML = `
-        <form id="trainingLogForm">
-          <div class="table-wrap"><table class="exercise-table"><thead><tr><th class="check-cell">完成</th><th>内容</th><th>计划</th><th>实际记录</th></tr></thead><tbody>
-            ${plan.exercises.map((exercise, index) => {
-              const saved = savedExercises[index] || {};
-              return `<tr><td class="check-cell"><input class="native-check" type="checkbox" name="done-${index}" ${saved.done ? "checked" : ""} aria-label="${exercise[0]}完成"></td><td><strong>${exercise[0]}</strong><br><small style="color:var(--muted)">${exercise[2]}</small></td><td>${exercise[1]}</td><td><input class="input" type="text" name="log-${index}" value="${escapeHtml(saved.log || "")}" placeholder="重量 / 次数"></td></tr>`;
+      const previous = [...state.workouts].filter(workout => workout.planKey === plan.key && workout.completed && workout.source !== "demo").sort((a, b) => (b.completedAt || b.date).localeCompare(a.completedAt || a.date))[0];
+      const strengthFields = plan.exercises.map((exercise, index) => {
+        const previousExercise = previous?.exercises?.find(item => item.name === exercise[0]);
+        const previousSets = previousExercise?.sets || [];
+        const filledSets = previousSets.filter(set => set?.reps != null);
+        const targetMax = Number(exercise[1].match(/–(\d+)/)?.[1]);
+        const readyToProgress = filledSets.length === 4 && filledSets.every(set => set.reps >= targetMax);
+        const lastText = filledSets.length ? `上次：${filledSets.map(set => `${set.weight}kg×${set.reps}`).join(" · ")}${readyToProgress ? " · 动作稳定时下次可试最小档加重" : ""}` : previousExercise?.log ? `上次：${escapeHtml(previousExercise.log)}` : "";
+        return `<section class="exercise-log"><div class="exercise-log-head"><strong>${exercise[0]}</strong><small>${exercise[1]} · ${exercise[2]}</small></div>
+          <div class="set-grid"><span>组</span><span>重量 kg</span><span>次数</span>
+            ${Array.from({ length: 4 }, (_, setIndex) => {
+              const saved = draft?.exercises?.[index]?.sets?.[setIndex] || {};
+              const hint = previousSets[setIndex]?.weight ?? (exercise[0] === "坐姿悬垂举腿" ? 0 : "");
+              return `<span>${setIndex + 1}</span><input class="input" type="number" inputmode="decimal" min="0" max="1000" step="0.5" name="weight-${index}-${setIndex}" aria-label="${exercise[0]}第${setIndex + 1}组重量，公斤" placeholder="${hint === "" ? "kg" : hint}" value="${escapeHtml(saved.weight ?? "")}"><input class="input" type="number" inputmode="numeric" min="1" max="100" step="1" name="reps-${index}-${setIndex}" aria-label="${exercise[0]}第${setIndex + 1}组次数" placeholder="次" value="${escapeHtml(saved.reps ?? "")}">`;
             }).join("")}
-          </tbody></table></div>
-          <div class="training-actions"><button class="btn" type="button" id="clearWorkout">清空</button><button class="btn btn-primary" type="submit">保存本次训练</button></div>
-        </form>`;
+          </div>${lastText ? `<p class="exercise-last">${lastText}</p>` : ""}</section>`;
+      }).join("");
+      const activityFields = `<div class="table-wrap"><table class="exercise-table"><thead><tr><th class="check-cell">完成</th><th>内容</th><th>计划</th><th>实际记录</th></tr></thead><tbody>${plan.exercises.map((exercise, index) => {
+        const saved = draft?.exercises?.[index] || {};
+        return `<tr><td class="check-cell"><input class="native-check" type="checkbox" name="done-${index}" ${saved.done ? "checked" : ""} aria-label="${exercise[0]}完成"></td><td><strong>${exercise[0]}</strong><br><small style="color:var(--muted)">${exercise[2]}</small></td><td>${exercise[1]}</td><td><input class="input" type="text" name="log-${index}" value="${escapeHtml(saved.log || "")}" placeholder="实际时间 / 感受"></td></tr>`;
+      }).join("")}</tbody></table></div>`;
+      $("#trainingFormArea").innerHTML = `<form id="trainingLogForm">${plan.type === "strength" ? strengthFields : activityFields}
+        <div class="training-actions"><button class="btn" type="button" id="clearWorkout">清空草稿</button><button class="btn btn-primary" type="submit">完成本次训练</button></div>
+        <p class="exercise-last">哑铃填单只重量，自重填0kg。填写时自动保存草稿；完成后可在训练历史中回看。</p>
+      </form>`;
 
-      $("#trainingLogForm").addEventListener("submit", event => {
+      const formElement = $("#trainingLogForm");
+      const collectExercises = () => {
+        const form = new FormData(formElement);
+        return plan.exercises.map((exercise, index) => plan.type === "strength"
+          ? { name: exercise[0], sets: Array.from({ length: 4 }, (_, setIndex) => ({ weight: String(form.get(`weight-${index}-${setIndex}`) ?? ""), reps: String(form.get(`reps-${index}-${setIndex}`) ?? "") })) }
+          : { name: exercise[0], done: form.has(`done-${index}`), log: String(form.get(`log-${index}`) || "").trim() });
+      };
+      formElement.addEventListener("input", () => {
+        state.workoutDrafts ||= {};
+        state.workoutDrafts[draftKey] = { exercises: collectExercises() };
+        saveState();
+      });
+      formElement.addEventListener("change", () => {
+        state.workoutDrafts ||= {};
+        state.workoutDrafts[draftKey] = { exercises: collectExercises() };
+        saveState();
+      });
+      formElement.addEventListener("submit", event => {
         event.preventDefault();
-        const form = new FormData(event.currentTarget);
-        const exercises = plan.exercises.map((exercise, index) => ({ name: exercise[0], done: form.has(`done-${index}`), log: String(form.get(`log-${index}`) || "").trim() }));
-        const completed = exercises.some(exercise => exercise.done);
-        const entry = { id: existing?.id || crypto.randomUUID(), date, planKey: plan.key, type: plan.type, completed, exercises, source: "user" };
-        state.workouts = state.workouts.filter(workout => !(workout.date === date && workout.planKey === plan.key && workout.source !== "demo"));
+        if (!formElement.reportValidity()) return;
+        const exercises = collectExercises();
+        if (plan.type === "strength") {
+          const sets = exercises.flatMap(exercise => exercise.sets);
+          if (sets.some(set => (set.weight === "") !== (set.reps === ""))) { alert("已填写的每一组都需要同时填写重量和次数；自重动作重量填0。"); return; }
+          if (!sets.some(set => set.reps !== "")) { alert("请至少记录一组重量和次数后再完成训练。"); return; }
+          exercises.forEach(exercise => { exercise.sets = exercise.sets.map(set => set.reps === "" ? null : { weight: Number(set.weight), reps: Number(set.reps) }); });
+        } else if (!exercises.some(exercise => exercise.done)) { alert("请先勾选本次已完成的项目。"); return; }
+        const entry = { id: crypto.randomUUID(), date, completedAt: new Date().toISOString(), planKey: plan.key, type: plan.type, completed: true, exercises, source: "user" };
         state.workouts.push(entry);
+        delete state.workoutDrafts?.[draftKey];
         saveState();
         renderAll();
+        recentWorkout = entry;
+        $("#workoutDoneTitle").textContent = `${dayNames[day]} · ${plan.title}`;
+        $("#workoutDoneSummary").textContent = `${formatFullDate(date)} · ${plan.type === "strength" ? `${exercises.reduce((sum, exercise) => sum + exercise.sets.filter(Boolean).length, 0)} 组已记录` : "打卡已记录"}`;
+        $("#workoutDoneDialog").showModal();
       });
       $("#clearWorkout").addEventListener("click", () => {
-        state.workouts = state.workouts.filter(workout => !(workout.date === date && workout.planKey === plan.key && workout.source !== "demo"));
+        if (!confirm("清空尚未完成的训练草稿？已完成的打卡记录不会删除。")) return;
+        delete state.workoutDrafts?.[draftKey];
         saveState();
-        renderAll();
+        renderTraining();
       });
+    }
+
+    function renderWorkoutHistory() {
+      const workouts = state.workouts.filter(workout => workout.source !== "demo" && workout.completed).sort((a, b) => (b.completedAt || b.date).localeCompare(a.completedAt || a.date));
+      $("#workoutHistory").innerHTML = workouts.length ? workouts.map(workout => {
+        const plan = Object.values(trainingPlan).find(item => item.key === workout.planKey);
+        const lines = (workout.exercises || []).map(exercise => {
+          const sets = exercise.sets?.map((set, index) => set ? `第${index + 1}组 ${escapeHtml(set.weight)}kg × ${escapeHtml(set.reps)}次` : null).filter(Boolean).join("、");
+          return `<li><strong>${escapeHtml(exercise.name)}</strong>：${sets || escapeHtml(exercise.log || (exercise.done ? "已完成" : "未记录"))}</li>`;
+        }).join("");
+        const time = workout.completedAt ? new Intl.DateTimeFormat("zh-CN", { hour: "2-digit", minute: "2-digit" }).format(new Date(workout.completedAt)) : "旧版记录";
+        return `<details><summary>${formatFullDate(workout.date)} · ${escapeHtml(plan?.title || workout.planKey)}<small>${time}</small></summary><ul>${lines || "<li>已完成，旧版未记录各组数据</li>"}</ul></details>`;
+      }).join("") : `<div class="empty">完成第一次训练后，打卡记录会出现在这里。</div>`;
     }
 
     function renderDiet() {
@@ -1214,7 +1301,7 @@
       else if (averageSleep) advice.push("睡眠达到基本恢复线，可以按原计划推进训练。");
       if (averageSteps && averageSteps < state.profile.stepsTarget) advice.push(`平均步数距离目标还差约 ${Math.round(state.profile.stepsTarget - averageSteps).toLocaleString()} 步。`);
       else if (averageSteps) advice.push("步数达到当前目标，暂时不需要继续增加有氧量。");
-      if (workoutsThisWeek().length < 3) advice.push("优先完成三次力量训练，再考虑额外有氧。");
+      if (workoutsThisWeek().filter(workout => workout.type === "strength" || ["upper-a", "lower", "full-b"].includes(workout.planKey)).length < 3) advice.push("优先完成三次力量训练，再考虑额外有氧。");
       else advice.push("力量训练频率已达标，保持动作质量和重量记录。");
       $("#weeklyAdvice").innerHTML = advice.slice(0, 3).map(item => `<li>${item}</li>`).join("");
 
@@ -1463,6 +1550,16 @@
       $("#exportJson").addEventListener("click", exportJson);
       $("#exportTop").addEventListener("click", exportJson);
       $("#exportCsv").addEventListener("click", exportCsv);
+      $("#shareWorkout").addEventListener("click", async () => {
+        if (!recentWorkout) return;
+        const plan = Object.values(trainingPlan).find(item => item.key === recentWorkout.planKey);
+        const lines = (recentWorkout.exercises || []).map(exercise => {
+          const sets = exercise.sets?.map((set, index) => set ? `第${index + 1}组 ${set.weight}kg × ${set.reps}次` : null).filter(Boolean).join("；");
+          return `${exercise.name}：${sets || exercise.log || (exercise.done ? "已完成" : "未记录")}`;
+        });
+        const content = [`${formatFullDate(recentWorkout.date)} · ${plan?.title || "训练"}`, ...lines].join("\n");
+        await shareOrDownload(`sirius-workout-${recentWorkout.date}.txt`, content, "text/plain;charset=utf-8");
+      });
       $("#importJson").addEventListener("change", async event => {
         const file = event.target.files[0];
         if (!file) return;
@@ -1484,6 +1581,8 @@
       console.assert(Object.keys(trainingPlan).length === 7, "训练周计划不完整");
       console.assert(PROGRAM_START_DATE === "2026-10-08", "计划起始日错误");
       console.assert(trainingPlan[1].title === "上肢 A" && dailyDietPlans[trainingPlan[1].type].meals.length === 3, "周一日计划映射失败");
+      console.assert([1, 3, 5].every(day => trainingPlan[day].exercises.every(exercise => exercise[1].startsWith("4 ×"))), "力量组数应为每动作4组");
+      console.assert(trainingPlan[3].exercises[3][0] === "坐姿悬垂举腿", "周三动作未更新");
       const estimate = estimateMealText("海南鸡饭，米饭三分之二，加一份青菜", "午餐");
       console.assert(estimate.protein >= 1.5 && estimate.veg >= 1 && estimate.calories > 400, "餐食估算失败");
     }
