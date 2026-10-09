@@ -177,7 +177,7 @@
       gap: 24px;
       align-items: start;
     }
-    .overview-grid > *, .training-layout > *, .diet-grid > *, .progress-layout > * { min-width: 0; }
+    .overview-grid > *, .training-layout > *, .progress-layout > * { min-width: 0; }
     .stack { display: grid; gap: 22px; }
     .module {
       padding-top: 15px;
@@ -265,7 +265,7 @@
     .daily-meals { display: grid; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
     .daily-meal {
       display: grid;
-      grid-template-columns: 50px minmax(0, 1fr) auto;
+      grid-template-columns: 58px minmax(0, 1fr);
       align-items: center;
       gap: 10px;
       padding: 11px 13px;
@@ -275,7 +275,6 @@
     .daily-meal strong { color: var(--green); font-size: 12px; }
     .daily-meal p { margin: 0; }
     .daily-meal small { color: var(--muted); }
-    .daily-meal .recorded { color: var(--green); font-size: 12px; font-weight: 700; }
     .morning-checkin {
       display: flex;
       align-items: center;
@@ -329,8 +328,8 @@
     .exercise-log-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-bottom: 9px; }
     .exercise-log-head strong { font-size: 15px; }
     .exercise-log-head small, .exercise-last { color: var(--muted); font-size: 12px; }
-    .set-grid { display: grid; grid-template-columns: 35px minmax(0, 1fr) minmax(0, 1fr); gap: 7px 9px; align-items: center; }
-    .set-grid > span { color: var(--muted); font-size: 12px; }
+    .set-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 10px; }
+    .set-grid label { display: grid; gap: 5px; color: var(--muted); font-size: 12px; }
     .set-grid .input { min-width: 0; }
     .exercise-last { margin: 8px 0 0; }
     .workout-history { display: grid; gap: 8px; }
@@ -348,38 +347,19 @@
     .rule-list { margin: 0; padding-left: 18px; color: var(--muted); }
     .rule-list li + li { margin-top: 8px; }
 
-    .diet-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr); gap: 26px; align-items: start; }
-    .portion-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    .portion {
-      padding: 13px;
-      border-top: 3px solid var(--green);
-      background: var(--surface);
-      box-shadow: 0 0 0 1px var(--line);
-      border-radius: 4px;
-    }
-    .portion:nth-child(2) { border-color: var(--coral); }
-    .portion:nth-child(3) { border-color: var(--blue); }
-    .portion:nth-child(4) { border-color: var(--yellow); }
-    .portion strong { display: block; font-size: 18px; }
-    .portion span { color: var(--muted); font-size: 12px; }
-    .meal-list { display: grid; gap: 8px; margin-top: 12px; }
-    .meal-row { display: grid; grid-template-columns: 66px 1fr auto; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); }
-    .meal-row:last-child { border-bottom: 0; }
-    .meal-type { color: var(--green); font-weight: 700; }
-    .meal-row p { margin: 0; }
-    .meal-row small { color: var(--muted); }
-    .meal-actions { display: flex; gap: 4px; }
+    .menu-week { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; }
+    .menu-day { border-top: 1px solid var(--line); min-width: 0; }
+    .menu-day summary { padding: 12px 0; cursor: pointer; font-weight: 650; }
+    .menu-day summary span { color: var(--muted); font-size: 12px; font-weight: 400; margin-left: 8px; }
+    .menu-day .daily-meals { margin: 0 0 12px; }
+    .menu-alt { margin: 9px 0 14px; color: var(--muted); font-size: 12px; }
+    .menu-ideas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 28px; }
+    .menu-ideas h4 { margin: 0 0 6px; font-size: 14px; }
+    .menu-idea { padding: 9px 0; border-top: 1px solid var(--line); }
+    .menu-idea strong { display: block; }
+    .menu-idea p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
     .text-action { border: 0; padding: 4px 5px; color: var(--muted); background: transparent; font-size: 12px; }
     .text-action:hover { color: var(--ink); text-decoration: underline; }
-    .water-control { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; }
-    .water-value { font-size: 26px; font-weight: 680; }
-    .water-value small { color: var(--muted); font-size: 12px; }
-    .mini-progress { height: 7px; margin-top: 8px; border-radius: 4px; overflow: hidden; background: #e5e9e6; }
-    .mini-progress div { height: 100%; background: var(--blue); transition: width 180ms ease; }
-    .meal-template { padding: 12px 0; border-bottom: 1px solid var(--line); }
-    .meal-template:last-child { border-bottom: 0; }
-    .meal-template strong { display: block; margin-bottom: 3px; }
-    .meal-template p { margin: 0; color: var(--muted); }
 
     .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
     .summary-item { padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
@@ -422,9 +402,6 @@
     .field { display: grid; gap: 5px; }
     .field.full { grid-column: 1 / -1; }
     .field label { color: var(--muted); font-size: 12px; font-weight: 650; }
-    .input-action { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
-    .estimate-hint { min-height: 20px; color: var(--muted); font-size: 12px; }
-    .estimate-hint strong { color: var(--green); }
     .form-details { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 12px; }
     .form-details summary { cursor: pointer; color: var(--green); font-weight: 700; }
     .form-details .form-grid { margin-top: 14px; }
@@ -434,8 +411,7 @@
 
     @media (max-width: 900px) {
       .metrics, .summary-grid { grid-template-columns: repeat(2, 1fr); }
-      .overview-grid, .training-layout, .diet-grid, .progress-layout { grid-template-columns: 1fr; }
-      .portion-grid { grid-template-columns: repeat(2, 1fr); }
+      .overview-grid, .training-layout, .progress-layout { grid-template-columns: 1fr; }
     }
     @media (max-width: 620px) {
       .topbar-inner, .page, .nav { width: min(100% - 20px, 1240px); }
@@ -462,19 +438,15 @@
       .exercise-table th:nth-child(3), .exercise-table td:nth-child(3) { display: none; }
       .exercise-log-head { flex-direction: column; gap: 2px; }
       .workout-history summary small { float: none; display: block; }
-      .portion-grid, .form-grid { grid-template-columns: 1fr; }
+      .menu-week, .menu-ideas, .form-grid { grid-template-columns: 1fr; }
       .field.full { grid-column: auto; }
-      .meal-row { grid-template-columns: 54px 1fr; }
-      .meal-actions { grid-column: 2; justify-content: flex-end; }
       .summary-grid { grid-template-columns: repeat(2, 1fr); }
       .goal-grid { gap: 8px; }
       .chart-frame { min-height: 270px; }
       .chart-frame svg { height: 256px; }
-      .daily-meal { grid-template-columns: 46px minmax(0, 1fr); }
-      .daily-meal > :last-child { grid-column: 2; justify-self: start; }
+      .daily-meal { grid-template-columns: 50px minmax(0, 1fr); }
       .morning-checkin { align-items: flex-start; }
       .morning-checkin .btn { flex: 0 0 auto; }
-      .input-action { grid-template-columns: 1fr; }
       .btn { min-height: 44px; }
       .btn-small { min-height: 38px; }
       body { padding-bottom: env(safe-area-inset-bottom); }
@@ -608,6 +580,7 @@
             <section class="module">
               <div class="module-head"><div><h3>今天怎么吃</h3><p id="todayMealPlanMeta">按训练安排分配主食</p></div></div>
               <div class="daily-meals" id="todayMealPlan"></div>
+              <p class="menu-alt" id="todayMealAlt"></p>
             </section>
 
             <section class="module">
@@ -658,61 +631,29 @@
 
       <section class="view" id="view-diet" hidden>
         <div class="page-heading">
-          <div><div class="eyebrow">中餐 × 地中海饮食</div><h2>今日饮食</h2><p>不称重，用手掌和拳头控制份量。</p></div>
-          <button class="btn btn-primary" type="button" id="openMeal">＋ 记录一餐</button>
+          <div><div class="eyebrow">中餐 × 地中海饮食</div><h2>本周菜谱</h2><p>工作日午餐点外卖，周末以早午餐和晚餐为主。</p></div>
         </div>
-        <div class="diet-grid">
-          <div class="stack">
-            <section class="module">
-              <div class="module-head"><div><h3>今日完成</h3><p>训练日主食可以略高</p></div></div>
-              <div class="portion-grid">
-                <div class="portion"><strong id="portionProtein">0 / 4</strong><span>蛋白质 · 掌</span></div>
-                <div class="portion"><strong id="portionVeg">0 / 4</strong><span>蔬菜 · 拳</span></div>
-                <div class="portion"><strong id="portionCarb">0 / 3</strong><span>主食 · 拳</span></div>
-                <div class="portion"><strong id="portionCalories">0 / 2000</strong><span>估算热量 · kcal</span></div>
-              </div>
-            </section>
-
-            <section class="module">
-              <div class="module-head"><div><h3>餐次记录</h3><p id="mealDateLabel"></p></div></div>
-              <div class="meal-list" id="mealList"></div>
-            </section>
-
-            <section class="module">
-              <div class="module-head"><div><h3>日常用餐模板</h3><p>从下面选，不需要每天换菜单</p></div></div>
-              <div class="meal-template"><strong>早餐</strong><p>2个全蛋＋2个蛋白，2片全麦面包，无糖强化豆奶，1份水果。</p></div>
-              <div class="meal-template"><strong>公司午餐</strong><p>轻食选双份鸡、牛、虾或鱼，主食1拳，蔬菜双份，酱汁分装用一半。</p></div>
-              <div class="meal-template"><strong>海南鸡饭</strong><p>鸡肉正常或加量，去大部分鸡皮，米饭吃约2/3，加一份青菜，少浇鸡油。</p></div>
-              <div class="meal-template"><strong>居家晚餐</strong><p>烤鱼、虾仁豆腐或空气炸鸡肉，搭配两份蔬菜和1拳主食。</p></div>
-            </section>
-          </div>
-
-          <aside class="stack">
-            <section class="module">
-              <div class="module-head"><div><h3>饮水</h3><p>篮球日适当增加</p></div></div>
-              <div class="water-control">
-                <div><div class="water-value"><span id="waterValue">0</span><small> / 2500 ml</small></div><div class="mini-progress"><div id="waterBar" style="width:0%"></div></div></div>
-                <button class="btn" type="button" id="addWater">＋250ml</button>
-              </div>
-            </section>
-            <section class="module">
-              <div class="module-head"><div><h3>晚间训练日</h3><p>19:00 晚餐 · 20:30 训练</p></div></div>
-              <ul class="rule-list">
-                <li>晚餐：1.5掌蛋白质、1–1.5拳主食、1–2拳蔬菜。</li>
-                <li>控制油脂，避免火锅、油炸和大量坚果。</li>
-                <li>训练后不饿无需加餐；饥饿时选豆奶、鸡蛋或植物蛋白饮品。</li>
-              </ul>
-            </section>
-            <section class="module">
-              <div class="module-head"><div><h3>聚餐边界</h3><p>每周保留一顿</p></div></div>
-              <ul class="rule-list">
-                <li>聚餐不是全天放纵，其他餐正常吃蛋白质和蔬菜。</li>
-                <li>白酒、油炸和甜点不同时叠加。</li>
-                <li>第二天正常饮食，不用断食补偿。</li>
-              </ul>
-            </section>
-          </aside>
-        </div>
+        <section class="module">
+          <div class="module-head"><div><h3>今天吃什么</h3><p id="dietTodayMeta"></p></div></div>
+          <div class="daily-meals" id="dietTodayMenu"></div>
+          <p class="menu-alt" id="dietTodayAlt"></p>
+        </section>
+        <section class="module">
+          <div class="module-head"><div><h3>七天菜单</h3><p>点开任意一天查看点单与做法</p></div></div>
+          <div class="menu-week" id="weeklyMenu"></div>
+        </section>
+        <section class="module">
+          <div class="module-head"><div><h3>不知道吃什么时</h3><p>按眼前的用餐场景挑一道</p></div></div>
+          <div class="menu-ideas" id="menuIdeas"></div>
+        </section>
+        <section class="module">
+          <div class="module-head"><div><h3>份量与时间</h3></div></div>
+          <ul class="rule-list">
+            <li>主餐优先有一到两掌鱼、虾、鸡、牛肉、蛋或豆制品，再配蔬菜和主食；不需要称重。</li>
+            <li>周一、三、五 20:30 力量训练，19:00 晚餐别太油；训练后饿了可加无糖豆奶、鸡蛋或植物蛋白饮品。</li>
+            <li>周日篮球前 60–90 分钟吃香蕉和吐司，赛后正常吃晚餐。周末两餐各放足1.5–2掌蛋白质，下午可加豆奶、鸡蛋或植物蛋白饮品。</li>
+          </ul>
+        </section>
       </section>
 
       <section class="view" id="view-progress" hidden>
@@ -811,25 +752,6 @@
     <div class="dialog-actions"><button class="btn" type="button" id="shareWorkout">分享打卡文件</button><button class="btn btn-primary" type="button" data-close="workoutDoneDialog">完成</button></div>
   </dialog>
 
-  <dialog id="mealDialog">
-    <form id="mealForm">
-      <div class="dialog-head"><h3>记录一餐</h3><button class="dialog-close" type="button" data-close="mealDialog" aria-label="关闭">×</button></div>
-      <div class="dialog-body">
-        <input type="hidden" name="mealId">
-        <div class="form-grid">
-          <div class="field"><label for="mealDate">日期</label><input class="input" id="mealDate" name="date" type="date" required></div>
-          <div class="field"><label for="mealType">餐次</label><select class="select" id="mealType" name="type"><option>早餐</option><option>午餐</option><option>晚餐</option><option>加餐</option><option>聚餐</option></select></div>
-          <div class="field full"><label for="mealDescription">吃了什么</label><div class="input-action"><input class="input" id="mealDescription" name="description" required placeholder="例如：海南鸡饭，米饭吃了约三分之二"><button class="btn" id="estimateMeal" type="button">自动估算</button></div><div class="estimate-hint" id="estimateHint">输入食物后会粗估份量和热量，你可以直接修改。</div></div>
-          <div class="field"><label for="mealProtein">蛋白质（掌）</label><input class="input" id="mealProtein" name="protein" type="number" min="0" max="4" step="0.5" value="1"></div>
-          <div class="field"><label for="mealVeg">蔬菜（拳）</label><input class="input" id="mealVeg" name="veg" type="number" min="0" max="6" step="0.5" value="1"></div>
-          <div class="field"><label for="mealCarb">主食（拳）</label><input class="input" id="mealCarb" name="carb" type="number" min="0" max="5" step="0.5" value="1"></div>
-          <div class="field"><label for="mealCalories">估算热量（可选）</label><input class="input" id="mealCalories" name="calories" type="number" min="0" max="5000" step="10"></div>
-        </div>
-      </div>
-      <div class="dialog-actions"><button class="btn" type="button" data-close="mealDialog">取消</button><button class="btn btn-primary" type="submit">保存餐次</button></div>
-    </form>
-  </dialog>
-
   <script>
     const STORE_KEY = "sirius-fitness-assistant-v1";
     const BASELINE_DATE = "2026-10-07";
@@ -874,97 +796,70 @@
     const weekOrder = [1, 2, 3, 4, 5, 6, 0];
     const dayNames = { 1: "周一", 2: "周二", 3: "周三", 4: "周四", 5: "周五", 6: "周六", 0: "周日" };
 
-    const dailyDietPlans = {
-      strength: { meta: "晚餐为20:30训练提供能量", meals: [
-        ["早餐", "鸡蛋、全麦面包、无糖豆奶和水果", "蛋白质1掌 · 主食1拳"],
-        ["午餐", "双份鸡、牛、鱼虾或豆腐，双份蔬菜", "蛋白质1.5掌 · 主食1拳"],
-        ["晚餐", "19:00少油正餐，训练后饿再少量加餐", "蛋白质1.5掌 · 主食1–1.5拳"]
+    const weeklyMenu = {
+      1: { meta: "晚间力量 · 19:00晚餐", meals: [
+        ["早餐", "鲜虾菠菜蛋饼＋全麦吐司＋无糖豆浆", "虾仁、鸡蛋和菠菜同煎，约15分钟。"],
+        ["午餐", "海南鸡饭＋一份青菜", "公司外卖：鸡肉正常或加量，米饭约2/3，少浇鸡油。"],
+        ["晚餐", "柠檬蒜香鸡腿＋番茄黄瓜沙拉＋米饭", "空气炸锅做鸡腿，米饭一拳；训练前别做得太油。"]
+      ], alternative: "晚餐点外卖：番茄牛腩饭＋加青菜，米饭正常份。" },
+      2: { meta: "晨间有氧 · 正常吃早餐", meals: [
+        ["早餐", "番茄豆腐鸡蛋汤＋全麦面包", "有氧后煮一锅，撒葱花和黑胡椒。"],
+        ["午餐", "地中海鸡肉藜麦碗", "公司外卖：鸡肉加量，彩椒、生菜、鹰嘴豆；酱汁分装。"],
+        ["晚餐", "姜葱清蒸鲈鱼＋蒜蓉西兰花＋小米饭", "蒸鱼约12分钟，西兰花焯熟后拌蒜和少量橄榄油。"]
+      ], alternative: "晚餐点外卖：清蒸鱼或白切鸡套餐＋双份蔬菜。" },
+      3: { meta: "晚间力量 · 19:00晚餐", meals: [
+        ["早餐", "卤牛肉鸡蛋青菜三明治＋水果", "全麦面包夹牛肉、鸡蛋和生菜，配一份水果。"],
+        ["午餐", "虾仁菌菇滑蛋饭＋青菜", "公司外卖：选少油做法，米饭一拳。"],
+        ["晚餐", "孜然牛肉彩椒炒饭＋拍黄瓜", "牛肉与彩椒快炒，饭量一拳，旁边加一盘黄瓜。"]
+      ], alternative: "晚餐点外卖：牛肉盖饭＋一份清炒青菜，少油少酱。" },
+      4: { meta: "恢复日 · 清爽但吃饱", meals: [
+        ["早餐", "金枪鱼牛油果吐司＋水煮蛋", "金枪鱼沥水，加柠檬汁和黑胡椒，不用蛋黄酱。"],
+        ["午餐", "清汤麻辣烫：牛肉＋豆腐＋菌菇青菜＋土豆", "公司外卖：不选重油麻酱，土豆当主食。"],
+        ["晚餐", "番茄鹰嘴豆炖鸡肉＋生菜沙拉", "番茄、鸡肉和鹰嘴豆一锅炖，橄榄油与醋拌生菜。"]
+      ], alternative: "晚餐点外卖：鸡肉蔬菜饭或烤鱼套餐，主食半拳到一拳。" },
+      5: { meta: "晚间力量 · 19:00晚餐", meals: [
+        ["早餐", "鲜虾玉米鸡蛋三明治＋无糖豆浆", "虾仁和鸡蛋煎熟，夹全麦面包，玉米粒增甜。"],
+        ["午餐", "照烧鸡腿饭＋双份蔬菜", "公司外卖：照烧汁减半，鸡腿去多余皮，米饭正常份。"],
+        ["晚餐", "罗勒番茄虾仁意面＋蒜香菠菜", "番茄和虾仁快炒拌意面，罗勒、柠檬提味，少奶油。"]
+      ], alternative: "晚餐点外卖：番茄海鲜意面＋沙拉，少奶油少油。" },
+      6: { meta: "晨间有氧 · 早午餐＋晚餐", meals: [
+        ["早午餐", "香煎三文鱼＋牛油果番茄吐司＋菠菜蛋", "三文鱼煎至熟，吐司配柠檬和黑胡椒。"],
+        ["晚餐", "彩椒牛肉＋蒜香菌菇西兰花＋米饭", "牛肉快炒，菌菇西兰花烤箱或锅炒；可认真做一顿。"]
+      ], alternative: "周六下馆子：粤菜点清蒸鱼、牛肉、时蔬和米饭；或日料选刺身、寿司和海藻沙拉。" },
+      0: { meta: "18:00篮球 · 赛前补碳水", meals: [
+        ["早午餐", "蒜香虾仁番茄鸡蛋意面＋生菜", "虾仁和鸡蛋补蛋白质，意面为下午球赛储备能量。"],
+        ["赛前加餐", "香蕉＋两片吐司", "开赛前60–90分钟吃，配水，别选高油零食。"],
+        ["晚餐", "赛后鸡肉豆腐菌菇锅＋米饭", "一锅煮鸡肉、豆腐、菌菇和青菜，配一拳米饭。"]
+      ], alternative: "赛后点外卖：海南鸡饭或鱼肉饭＋青菜，正常吃晚餐。" }
+    };
+
+    const menuIdeas = [
+      { title: "公司午餐外卖", dishes: [
+        ["海南鸡饭", "加青菜、少鸡油；训练日米饭正常，休息日约2/3。"],
+        ["牛肉菌菇饭", "选清炒或炖煮，另加一份绿叶菜。"],
+        ["鸡肉藜麦能量碗", "鸡肉加量，鹰嘴豆、番茄和绿叶菜，酱汁分装。"],
+        ["清汤麻辣烫", "牛肉、虾、豆腐、青菜、菌菇，配土豆或少量粉。"],
+        ["虾仁滑蛋饭", "加一份蔬菜，少油少酱。"]
       ]},
-      cardio: { meta: "空腹有氧后及时吃早餐", meals: [
-        ["早餐", "有氧后吃鸡蛋、面包、无糖豆奶和水果", "蛋白质1掌 · 主食1拳"],
-        ["午餐", "轻食能量餐或少油海南鸡饭", "蛋白质1.5掌 · 蔬菜2拳"],
-        ["晚餐", "鱼虾、鸡肉或豆腐，搭配两份蔬菜", "蛋白质1.5掌 · 主食1拳"]
+      { title: "在家15–25分钟", dishes: [
+        ["柠檬蒜香鸡腿", "鸡腿抹蒜、盐、黑胡椒，空气炸锅做熟，配沙拉和米饭。"],
+        ["番茄虾仁意面", "番茄炒出汁，下虾仁、意面和罗勒，配菠菜。"],
+        ["牛肉彩椒饭", "牛肉和彩椒快炒，孜然与黑胡椒提味，配拍黄瓜。"],
+        ["虾仁豆腐菌菇煲", "菌菇、豆腐和虾仁煮一锅，加葱姜，配米饭。"],
+        ["金枪鱼牛油果吐司", "金枪鱼沥水，加柠檬和黑胡椒，配水煮蛋。"]
       ]},
-      rest: { meta: "蛋白质不减，主食略低", meals: [
-        ["早餐", "鸡蛋、无糖豆奶、全麦面包和水果", "蛋白质1掌 · 主食1拳"],
-        ["午餐", "双份蛋白质和蔬菜，酱汁分装", "蛋白质1.5掌 · 主食1拳"],
-        ["晚餐", "清蒸鱼、虾仁豆腐或空气炸鸡肉", "蛋白质1.5掌 · 主食0.5–1拳"]
+      { title: "周末认真做", dishes: [
+        ["番茄鹰嘴豆炖牛腩", "牛腩炖软，加番茄、鹰嘴豆和香草，配烤蔬菜。"],
+        ["香草烤鲈鱼", "鱼配柠檬、蒜和橄榄油烤熟，旁边烤土豆和西兰花。"],
+        ["地中海海鲜饭", "虾、鱼、番茄和彩椒焖饭，配一盘绿叶菜。"]
       ]},
-      basketball: { meta: "赛前补碳水，赛后正常晚餐", meals: [
-        ["早餐", "鸡蛋、无糖豆奶、全麦主食和水果", "正常早餐"],
-        ["午餐", "蛋白质、蔬菜和一拳主食", "不要刻意少吃"],
-        ["加餐", "赛前60–90分钟吃香蕉和两片面包", "低油、易消化"],
-        ["晚餐", "赛后吃鱼肉、鸡肉或牛肉配主食蔬菜", "补水，不暴食"]
+      { title: "晚餐外卖或下馆子", dishes: [
+        ["清蒸鱼套餐", "配青菜和米饭，口味好又不容易太油。"],
+        ["番茄牛腩饭", "加蔬菜，酱汁少浇。"],
+        ["粤菜双人餐", "清蒸鱼、白切鸡、时蔬和米饭，按食量分。"],
+        ["日料", "刺身或烤鱼、寿司、海藻沙拉，少选炸物。"]
       ]}
-    };
-
-    const mealDefaults = {
-      早餐: { protein: 1, veg: 0, carb: 1, calories: 420 },
-      午餐: { protein: 1.5, veg: 1.5, carb: 1.5, calories: 650 },
-      晚餐: { protein: 1.5, veg: 1.5, carb: 1, calories: 600 },
-      加餐: { protein: 0.5, veg: 0, carb: 0.5, calories: 220 },
-      聚餐: { protein: 2, veg: 1.5, carb: 1.5, calories: 1000 }
-    };
-
-    function estimateMealText(description, type) {
-      let text = String(description || "").trim().replace(/两(?=[个只颗片杯碗份块])/g, "2").replace(/一(?=[个只颗片杯碗份块])/g, "1");
-      const defaults = mealDefaults[type] || mealDefaults.午餐;
-      const result = { protein: 0, veg: 0, carb: 0, calories: 0, matches: [] };
-      const add = (name, protein, veg, carb, calories) => {
-        result.protein += protein; result.veg += veg; result.carb += carb; result.calories += calories; result.matches.push(name);
-      };
-      const composites = [
-        [/海南鸡饭/, "海南鸡饭", 1.5, 0.5, 1.5, 700],
-        [/轻食|能量餐|健身餐/, "轻食能量餐", 1.5, 2, 1, 550],
-        [/麻辣烫|冒菜/, "麻辣烫", 1.5, 2, 1.5, 700],
-        [/火锅/, "火锅", 2, 2, 1, 950],
-        [/桌餐|聚餐|宴席/, "桌餐", 2, 1.5, 1.5, 1000]
-      ];
-      const composite = composites.find(([pattern]) => pattern.test(text));
-      if (composite) {
-        add(composite[1], composite[2], composite[3], composite[4], composite[5]);
-        if (/加.*(?:青菜|蔬菜|沙拉|西兰花)/.test(text)) { result.veg += 1; result.calories += 60; result.matches.push("加蔬菜"); }
-        if (/双份.*(?:鸡|牛|鱼|虾|肉|蛋白)/.test(text)) { result.protein += 1; result.calories += 180; result.matches.push("双份蛋白质"); }
-        if (/米饭.*(?:半|1\/2)/.test(text)) { result.carb -= 0.5; result.calories -= 100; }
-        if (/米饭.*三分之二/.test(text)) { result.carb -= 0.4; result.calories -= 80; }
-      } else {
-        const quantity = (pattern, fallback = 1) => {
-          const before = text.match(new RegExp(`(\\d+(?:\\.\\d+)?)\\s*(?:个|只|颗|片|杯|碗|份|块)?\\s*(?:${pattern})`));
-          const after = text.match(new RegExp(`(?:${pattern})\\s*(\\d+(?:\\.\\d+)?)\\s*(?:个|只|颗|片|杯|碗|份|块)?`));
-          return before ? Number(before[1]) : after ? Number(after[1]) : fallback;
-        };
-        if (/鸡蛋|全蛋/.test(text)) { const n = quantity("鸡蛋|全蛋"); add("鸡蛋", n * 0.25, 0, 0, n * 70); }
-        if (/蛋白/.test(text) && !/蛋白质/.test(text)) { const n = quantity("蛋白"); add("蛋白", n * 0.15, 0, 0, n * 18); }
-        if (/鸡胸|鸡肉|鸡腿|白切鸡/.test(text)) add("鸡肉", 1.5, 0, 0, 260);
-        if (/牛肉|瘦牛/.test(text)) add("牛肉", 1.5, 0, 0, 300);
-        if (/鱼|三文鱼|鳕鱼/.test(text)) add("鱼", 1.5, 0, 0, /三文鱼/.test(text) ? 320 : 240);
-        if (/虾|虾仁/.test(text)) add("虾", 1.5, 0, 0, 190);
-        if (/豆腐|豆干|毛豆/.test(text)) add("豆制品", 1, 0, 0.25, 180);
-        if (/无糖豆奶|无糖豆浆|豆乳/.test(text)) add("豆奶", 0.35, 0, 0.25, 110);
-        else if (/牛奶|拿铁/.test(text)) add("乳饮", 0.25, 0, 0.5, /拿铁/.test(text) ? 180 : 120);
-        if (/米饭|杂粮饭|藜麦/.test(text)) add("米饭", 0, 0, /半碗|半份|半拳|三分之二/.test(text) ? 0.7 : 1.2, /半碗|半份|半拳|三分之二/.test(text) ? 160 : 250);
-        if (/面条|意面|粉丝|河粉|乌冬/.test(text)) add("面食", 0.25, 0, 1.5, 360);
-        if (/面包|吐司/.test(text)) { const n = quantity("(?:全麦)?(?:面包|吐司)"); add("面包", 0, 0, n * 0.35, n * 85); }
-        if (/weetbix|维他麦/i.test(text)) { const n = quantity("weetbix|维他麦"); add("Weet-Bix", 0.1, 0, n * 0.35, n * 70); }
-        if (/燕麦/.test(text)) add("燕麦", 0.25, 0, 1, 230);
-        if (/土豆|红薯|玉米|南瓜/.test(text)) add("薯类", 0, 0, 1, 180);
-        if (/蔬菜|青菜|西兰花|菠菜|生菜|菌菇|蘑菇|彩椒|番茄/.test(text)) add("蔬菜", 0, /双份|两份|2份/.test(text) ? 2 : 1.5, 0, 90);
-        if (/沙拉/.test(text) && !result.matches.includes("蔬菜")) add("沙拉", 0, 2, 0, 120);
-        if (/香蕉|苹果|橙|莓|水果/.test(text)) add("水果", 0, 0, 0.5, 90);
-        if (/坚果|花生|腰果|杏仁/.test(text)) add("坚果", 0.2, 0, 0, 180);
-        if (/牛肉干/.test(text)) add("牛肉干", 0.5, 0, 0.1, 150);
-        if (/虾条|薯片|果冻/.test(text)) add("零食", 0, 0, 0.5, 180);
-        if (/油炸|炸鸡|炸物/.test(text)) { result.calories += 220; result.matches.push("油炸用油"); }
-        if (/白酒|啤酒|红酒/.test(text)) { result.calories += /白酒/.test(text) ? 250 : 180; result.matches.push("酒精"); }
-      }
-      if (!result.matches.length) Object.assign(result, { ...defaults, matches: ["普通餐次"] });
-      result.protein = clamp(Math.round(result.protein * 2) / 2, 0, 4);
-      result.veg = clamp(Math.round(result.veg * 2) / 2, 0, 6);
-      result.carb = clamp(Math.round(result.carb * 2) / 2, 0, 5);
-      result.calories = Math.max(0, Math.round(result.calories / 10) * 10);
-      result.note = result.matches[0] === "普通餐次" ? "未识别具体食材，已按普通餐次估算" : `已识别：${result.matches.join("、")}`;
-      return result;
-    }
+    ];
 
     function seedState() {
       const today = new Date();
@@ -1116,20 +1011,15 @@
         <div class="today-plan-head"><strong>${plan.title}</strong><span class="status-dot">${isPlanDone(new Date().getDay()) ? "已完成" : "待完成"}</span></div>
         <ul class="plan-list">${plan.exercises.map((exercise, index) => `<li><span class="plan-index">${index + 1}</span><span>${exercise[0]}<br><small>${exercise[2]}</small></span><small>${exercise[1]}</small></li>`).join("")}</ul>`;
 
-      const dailyDiet = dailyDietPlans[plan.type];
-      const todayMeals = state.meals.filter(meal => meal.date === dateKey());
-      $("#todayMealPlanMeta").textContent = dailyDiet.meta;
-      $("#todayMealPlan").innerHTML = dailyDiet.meals.map(meal => {
-        const recorded = todayMeals.some(entry => entry.type === meal[0]);
-        return `<div class="daily-meal"><strong>${meal[0]}</strong><div><p>${meal[1]}</p><small>${meal[2]}</small></div>${recorded ? `<span class="recorded">已记录</span>` : `<button class="btn btn-small" type="button" data-quick-meal="${meal[0]}">记录</button>`}</div>`;
-      }).join("");
-      $$('[data-quick-meal]').forEach(button => button.addEventListener("click", () => openMealDialog(null, button.dataset.quickMeal)));
+      const todayMenu = weeklyMenu[new Date().getDay()];
+      $("#todayMealPlanMeta").textContent = todayMenu.meta;
+      $("#todayMealPlan").innerHTML = mealRows(todayMenu);
+      $("#todayMealAlt").textContent = todayMenu.alternative;
 
       const focus = [];
       if ((current.sleep ?? 7.5) < 7) focus.push("昨夜睡眠不足7小时，今天不要增加训练重量。");
       else focus.push("今晚尽量在00:30前准备入睡，维持7.5小时睡眠。");
       if ((current.steps ?? 0) < state.profile.stepsTarget) focus.push(`今天还需约 ${Math.max(0, state.profile.stepsTarget - (current.steps || 0)).toLocaleString()} 步，可拆成两次饭后步行。`);
-      if (todayMeals.reduce((sum, meal) => sum + Number(meal.protein || 0), 0) < 3) focus.push("下一餐优先补足1–1.5掌瘦肉、鱼虾、鸡蛋或豆制品。");
       const lastBackup = state.meta?.lastBackup ? new Date(state.meta.lastBackup) : null;
       if (!lastBackup || Date.now() - lastBackup.getTime() > 7 * 86400000) focus.push("本周尚未备份，方便时把 JSON 存入手机“文件”或 iCloud。");
       $("#focusList").innerHTML = focus.slice(0, 3).map(item => `<li>${item}</li>`).join("");
@@ -1166,21 +1056,22 @@
         return;
       }
 
-      const previous = [...state.workouts].filter(workout => workout.planKey === plan.key && workout.completed && workout.source !== "demo").sort((a, b) => (b.completedAt || b.date).localeCompare(a.completedAt || a.date))[0];
+      const previousWorkouts = [...state.workouts].filter(workout => workout.planKey === plan.key && workout.completed && workout.source !== "demo").sort((a, b) => (b.completedAt || b.date).localeCompare(a.completedAt || a.date));
       const strengthFields = plan.exercises.map((exercise, index) => {
-        const previousExercise = previous?.exercises?.find(item => item.name === exercise[0]);
-        const previousSets = previousExercise?.sets || [];
+        const previousExercise = previousWorkouts.map(workout => workout.exercises?.find(item => item.name === exercise[0])).find(hasExerciseRecord);
+        const previousSets = Array.isArray(previousExercise?.sets) ? previousExercise.sets : [];
         const filledSets = previousSets.filter(set => set?.reps != null);
         const targetMax = Number(exercise[1].match(/–(\d+)/)?.[1]);
-        const readyToProgress = filledSets.length === 4 && filledSets.every(set => set.reps >= targetMax);
-        const lastText = filledSets.length ? `上次：${filledSets.map(set => `${set.weight}kg×${set.reps}`).join(" · ")}${readyToProgress ? " · 动作稳定时下次可试最小档加重" : ""}` : previousExercise?.log ? `上次：${escapeHtml(previousExercise.log)}` : "";
+        const previousReps = previousExercise?.reps ?? (filledSets.length ? Math.min(...filledSets.map(set => Number(set.reps))) : null);
+        const readyToProgress = (previousExercise?.sets === 4 || filledSets.length === 4) && previousReps >= targetMax;
+        const lastText = previousExercise ? `上次：${escapeHtml(exerciseRecordText(previousExercise))}${readyToProgress ? " · 动作稳定时下次可试最小档加重" : ""}` : "";
+        const saved = draft?.exercises?.[index] || {};
+        const oldDraftSets = Array.isArray(saved.sets) ? saved.sets.filter(set => set?.reps !== "" && set?.reps != null) : [];
+        const savedWeight = saved.weight ?? oldDraftSets[0]?.weight ?? "";
+        const savedReps = saved.reps ?? (oldDraftSets.length ? Math.min(...oldDraftSets.map(set => Number(set.reps))) : "");
+        const hint = previousExercise?.weight ?? filledSets[0]?.weight ?? (exercise[0] === "坐姿悬垂举腿" ? 0 : "");
         return `<section class="exercise-log"><div class="exercise-log-head"><strong>${exercise[0]}</strong><small>${exercise[1]} · ${exercise[2]}</small></div>
-          <div class="set-grid"><span>组</span><span>重量 kg</span><span>次数</span>
-            ${Array.from({ length: 4 }, (_, setIndex) => {
-              const saved = draft?.exercises?.[index]?.sets?.[setIndex] || {};
-              const hint = previousSets[setIndex]?.weight ?? (exercise[0] === "坐姿悬垂举腿" ? 0 : "");
-              return `<span>${setIndex + 1}</span><input class="input" type="number" inputmode="decimal" min="0" max="1000" step="0.5" name="weight-${index}-${setIndex}" aria-label="${exercise[0]}第${setIndex + 1}组重量，公斤" placeholder="${hint === "" ? "kg" : hint}" value="${escapeHtml(saved.weight ?? "")}"><input class="input" type="number" inputmode="numeric" min="1" max="100" step="1" name="reps-${index}-${setIndex}" aria-label="${exercise[0]}第${setIndex + 1}组次数" placeholder="次" value="${escapeHtml(saved.reps ?? "")}">`;
-            }).join("")}
+          <div class="set-grid"><label>重量 kg<input class="input" type="number" inputmode="decimal" min="0" max="1000" step="0.5" name="weight-${index}" aria-label="${exercise[0]}重量，公斤" placeholder="${hint === "" ? "kg" : hint}" value="${escapeHtml(savedWeight)}"></label><label>最低次数<input class="input" type="number" inputmode="numeric" min="1" max="100" step="1" name="reps-${index}" aria-label="${exercise[0]}四组中最低次数" placeholder="四组中最低" value="${escapeHtml(savedReps)}"></label>
           </div>${lastText ? `<p class="exercise-last">${lastText}</p>` : ""}</section>`;
       }).join("");
       const activityFields = `<div class="table-wrap"><table class="exercise-table"><thead><tr><th class="check-cell">完成</th><th>内容</th><th>计划</th><th>实际记录</th></tr></thead><tbody>${plan.exercises.map((exercise, index) => {
@@ -1189,14 +1080,14 @@
       }).join("")}</tbody></table></div>`;
       $("#trainingFormArea").innerHTML = `<form id="trainingLogForm">${plan.type === "strength" ? strengthFields : activityFields}
         <div class="training-actions"><button class="btn" type="button" id="clearWorkout">清空草稿</button><button class="btn btn-primary" type="submit">完成本次训练</button></div>
-        <p class="exercise-last">哑铃填单只重量，自重填0kg。填写时自动保存草稿；完成后可在训练历史中回看。</p>
+        <p class="exercise-last">力量动作每项做4组，重量填本次固定重量；次数填四组中最低的一组。哑铃填单只重量，自重填0kg。草稿自动保存。</p>
       </form>`;
 
       const formElement = $("#trainingLogForm");
       const collectExercises = () => {
         const form = new FormData(formElement);
         return plan.exercises.map((exercise, index) => plan.type === "strength"
-          ? { name: exercise[0], sets: Array.from({ length: 4 }, (_, setIndex) => ({ weight: String(form.get(`weight-${index}-${setIndex}`) ?? ""), reps: String(form.get(`reps-${index}-${setIndex}`) ?? "") })) }
+          ? { name: exercise[0], weight: String(form.get(`weight-${index}`) ?? ""), reps: String(form.get(`reps-${index}`) ?? "") }
           : { name: exercise[0], done: form.has(`done-${index}`), log: String(form.get(`log-${index}`) || "").trim() });
       };
       formElement.addEventListener("input", () => {
@@ -1214,10 +1105,9 @@
         if (!formElement.reportValidity()) return;
         const exercises = collectExercises();
         if (plan.type === "strength") {
-          const sets = exercises.flatMap(exercise => exercise.sets);
-          if (sets.some(set => (set.weight === "") !== (set.reps === ""))) { alert("已填写的每一组都需要同时填写重量和次数；自重动作重量填0。"); return; }
-          if (!sets.some(set => set.reps !== "")) { alert("请至少记录一组重量和次数后再完成训练。"); return; }
-          exercises.forEach(exercise => { exercise.sets = exercise.sets.map(set => set.reps === "" ? null : { weight: Number(set.weight), reps: Number(set.reps) }); });
+          if (exercises.some(exercise => (exercise.weight === "") !== (exercise.reps === ""))) { alert("已填写的动作需要同时填写重量和次数；自重动作重量填0。"); return; }
+          if (!exercises.some(exercise => exercise.reps !== "")) { alert("请至少记录一个动作的重量和次数后再完成训练。"); return; }
+          exercises.forEach(exercise => { if (exercise.reps !== "") { exercise.weight = Number(exercise.weight); exercise.reps = Number(exercise.reps); exercise.sets = 4; } });
         } else if (!exercises.some(exercise => exercise.done)) { alert("请先勾选本次已完成的项目。"); return; }
         const entry = { id: crypto.randomUUID(), date, completedAt: new Date().toISOString(), planKey: plan.key, type: plan.type, completed: true, exercises, source: "user" };
         state.workouts.push(entry);
@@ -1226,7 +1116,7 @@
         renderAll();
         recentWorkout = entry;
         $("#workoutDoneTitle").textContent = `${dayNames[day]} · ${plan.title}`;
-        $("#workoutDoneSummary").textContent = `${formatFullDate(date)} · ${plan.type === "strength" ? `${exercises.reduce((sum, exercise) => sum + exercise.sets.filter(Boolean).length, 0)} 组已记录` : "打卡已记录"}`;
+        $("#workoutDoneSummary").textContent = `${formatFullDate(date)} · ${plan.type === "strength" ? `${exercises.filter(exercise => exercise.reps !== "").length} 个动作已记录` : "打卡已记录"}`;
         $("#workoutDoneDialog").showModal();
       });
       $("#clearWorkout").addEventListener("click", () => {
@@ -1237,43 +1127,38 @@
       });
     }
 
+    function hasExerciseRecord(exercise) {
+      return Boolean(exercise && (exercise.reps !== "" && exercise.reps != null || Array.isArray(exercise.sets) && exercise.sets.some(Boolean) || exercise.log || exercise.done));
+    }
+
+    function exerciseRecordText(exercise) {
+      if (exercise.weight !== "" && exercise.weight != null && exercise.reps !== "" && exercise.reps != null) return `${exercise.sets || 4}组 · ${exercise.weight}kg × 最低${exercise.reps}次`;
+      const sets = Array.isArray(exercise.sets) ? exercise.sets.map((set, index) => set ? `第${index + 1}组 ${set.weight}kg × ${set.reps}次` : null).filter(Boolean).join("、") : "";
+      return sets || exercise.log || (exercise.done ? "已完成" : "未记录");
+    }
+
     function renderWorkoutHistory() {
       const workouts = state.workouts.filter(workout => workout.source !== "demo" && workout.completed).sort((a, b) => (b.completedAt || b.date).localeCompare(a.completedAt || a.date));
       $("#workoutHistory").innerHTML = workouts.length ? workouts.map(workout => {
         const plan = Object.values(trainingPlan).find(item => item.key === workout.planKey);
-        const lines = (workout.exercises || []).map(exercise => {
-          const sets = exercise.sets?.map((set, index) => set ? `第${index + 1}组 ${escapeHtml(set.weight)}kg × ${escapeHtml(set.reps)}次` : null).filter(Boolean).join("、");
-          return `<li><strong>${escapeHtml(exercise.name)}</strong>：${sets || escapeHtml(exercise.log || (exercise.done ? "已完成" : "未记录"))}</li>`;
-        }).join("");
+        const lines = (workout.exercises || []).filter(hasExerciseRecord).map(exercise => `<li><strong>${escapeHtml(exercise.name)}</strong>：${escapeHtml(exerciseRecordText(exercise))}</li>`).join("");
         const time = workout.completedAt ? new Intl.DateTimeFormat("zh-CN", { hour: "2-digit", minute: "2-digit" }).format(new Date(workout.completedAt)) : "旧版记录";
         return `<details><summary>${formatFullDate(workout.date)} · ${escapeHtml(plan?.title || workout.planKey)}<small>${time}</small></summary><ul>${lines || "<li>已完成，旧版未记录各组数据</li>"}</ul></details>`;
       }).join("") : `<div class="empty">完成第一次训练后，打卡记录会出现在这里。</div>`;
     }
 
+    function mealRows(menu) {
+      return menu.meals.map(meal => `<div class="daily-meal"><strong>${escapeHtml(meal[0])}</strong><div><p>${escapeHtml(meal[1])}</p><small>${escapeHtml(meal[2])}</small></div></div>`).join("");
+    }
+
     function renderDiet() {
-      const today = dateKey();
-      const meals = state.meals.filter(meal => meal.date === today).sort((a, b) => a.createdAt - b.createdAt);
-      const totals = meals.reduce((sum, meal) => ({ protein: sum.protein + Number(meal.protein || 0), veg: sum.veg + Number(meal.veg || 0), carb: sum.carb + Number(meal.carb || 0) }), { protein: 0, veg: 0, carb: 0 });
-      const calories = meals.reduce((sum, meal) => sum + Number(meal.calories || 0), 0);
-      const todayType = trainingPlan[new Date().getDay()].type;
-      const calorieTarget = todayType === "strength" || todayType === "basketball" ? 2100 : todayType === "rest" ? 1900 : 2000;
-      $("#portionProtein").textContent = `${totals.protein} / 4`;
-      $("#portionVeg").textContent = `${totals.veg} / 4`;
-      $("#portionCarb").textContent = `${totals.carb} / 3`;
-      $("#portionCalories").textContent = `${calories} / ${calorieTarget}`;
-      $("#mealDateLabel").textContent = formatFullDate(today);
-      $("#mealList").innerHTML = meals.length ? meals.map(meal => `
-        <div class="meal-row"><span class="meal-type">${escapeHtml(meal.type)}</span><div><p>${escapeHtml(meal.description)}</p><small>蛋白质 ${meal.protein || 0}掌 · 蔬菜 ${meal.veg || 0}拳 · 主食 ${meal.carb || 0}拳${meal.calories ? ` · 约${meal.calories}kcal` : ""}</small></div><div class="meal-actions"><button class="text-action" type="button" data-edit-meal="${meal.id}">编辑</button><button class="text-action" type="button" data-delete-meal="${meal.id}">删除</button></div></div>`).join("") : `<div class="empty">今天还没有餐次记录。</div>`;
-      $$('[data-edit-meal]').forEach(button => button.addEventListener("click", () => openMealDialog(state.meals.find(meal => meal.id === button.dataset.editMeal))));
-      $$('[data-delete-meal]').forEach(button => button.addEventListener("click", () => {
-        state.meals = state.meals.filter(meal => meal.id !== button.dataset.deleteMeal);
-        saveState();
-        renderDiet();
-        renderOverview();
-      }));
-      const water = Number(state.water[today] || 0);
-      $("#waterValue").textContent = water;
-      $("#waterBar").style.width = `${clamp(water / state.profile.waterTarget * 100, 0, 100)}%`;
+      const today = new Date().getDay();
+      const menu = weeklyMenu[today];
+      $("#dietTodayMeta").textContent = `${dayNames[today]} · ${menu.meta}`;
+      $("#dietTodayMenu").innerHTML = mealRows(menu);
+      $("#dietTodayAlt").textContent = menu.alternative;
+      $("#weeklyMenu").innerHTML = weekOrder.map(day => `<details class="menu-day" ${day === today ? "open" : ""}><summary>${dayNames[day]}<span>${escapeHtml(weeklyMenu[day].meta)}</span></summary><div class="daily-meals">${mealRows(weeklyMenu[day])}</div><p class="menu-alt">${escapeHtml(weeklyMenu[day].alternative)}</p></details>`).join("");
+      $("#menuIdeas").innerHTML = menuIdeas.map(group => `<section><h4>${escapeHtml(group.title)}</h4>${group.dishes.map(dish => `<div class="menu-idea"><strong>${escapeHtml(dish[0])}</strong><p>${escapeHtml(dish[1])}</p></div>`).join("")}</section>`).join("");
     }
 
     function renderProgress() {
@@ -1434,36 +1319,6 @@
       requestAnimationFrame(() => form.elements.weight.select());
     }
 
-    function openMealDialog(meal = null, presetType = null) {
-      const form = $("#mealForm");
-      form.reset();
-      form.elements.mealId.value = meal?.id || "";
-      form.elements.date.value = meal?.date || dateKey();
-      form.elements.type.value = meal?.type || presetType || "早餐";
-      form.elements.description.value = meal?.description || "";
-      form.elements.protein.value = meal?.protein ?? 1;
-      form.elements.veg.value = meal?.veg ?? 1;
-      form.elements.carb.value = meal?.carb ?? 1;
-      form.elements.calories.value = meal?.calories || "";
-      $("#estimateHint").textContent = meal ? "已载入原记录，修改食物描述后可重新估算。" : "输入食物后会粗估份量和热量，你可以直接修改。";
-      $("#mealDialog").showModal();
-    }
-
-    function applyMealEstimate() {
-      const form = $("#mealForm");
-      const description = form.elements.description.value.trim();
-      if (!description) {
-        $("#estimateHint").textContent = "请先输入这一餐吃了什么。";
-        return;
-      }
-      const estimate = estimateMealText(description, form.elements.type.value);
-      form.elements.protein.value = estimate.protein;
-      form.elements.veg.value = estimate.veg;
-      form.elements.carb.value = estimate.carb;
-      form.elements.calories.value = estimate.calories;
-      $("#estimateHint").innerHTML = `<strong>${estimate.note}</strong> · 约 ${estimate.calories} kcal。油量和实际份量会造成明显误差。`;
-    }
-
     function escapeHtml(value) {
       return String(value).replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
     }
@@ -1515,10 +1370,6 @@
       $("#openCheckin").addEventListener("click", () => openCheckinDialog(todayRecord()));
       $("#openMorningCheckin").addEventListener("click", () => openCheckinDialog(todayRecord()));
       $("#openCheckinTable").addEventListener("click", () => openCheckinDialog());
-      $("#openMeal").addEventListener("click", () => openMealDialog());
-      $("#estimateMeal").addEventListener("click", applyMealEstimate);
-      $("#mealDescription").addEventListener("blur", () => { if ($("#mealDescription").value.trim()) applyMealEstimate(); });
-      $("#mealType").addEventListener("change", () => { if ($("#mealDescription").value.trim()) applyMealEstimate(); });
       $$('[data-close]').forEach(button => button.addEventListener("click", () => document.getElementById(button.dataset.close).close()));
       $("#checkinForm").addEventListener("submit", event => {
         event.preventDefault();
@@ -1533,19 +1384,6 @@
         state.records.push(record);
         saveState(); $("#checkinDialog").close(); renderAll();
       });
-      $("#mealForm").addEventListener("submit", event => {
-        event.preventDefault();
-        const form = event.currentTarget;
-        if (!form.reportValidity()) return;
-        const data = new FormData(form);
-        const id = data.get("mealId") || crypto.randomUUID();
-        const existing = state.meals.find(meal => meal.id === id);
-        const meal = { id, date: data.get("date"), type: data.get("type"), description: String(data.get("description")).trim(), protein: Number(data.get("protein") || 0), veg: Number(data.get("veg") || 0), carb: Number(data.get("carb") || 0), calories: data.get("calories") ? Number(data.get("calories")) : null, createdAt: existing?.createdAt || Date.now() };
-        state.meals = state.meals.filter(item => item.id !== id);
-        state.meals.push(meal);
-        saveState(); $("#mealDialog").close(); renderDiet(); renderOverview();
-      });
-      $("#addWater").addEventListener("click", () => { const today = dateKey(); state.water[today] = Math.min(5000, Number(state.water[today] || 0) + 250); saveState(); renderDiet(); });
       $("#clearDemo").addEventListener("click", () => { state.records = state.records.filter(record => record.source !== "demo"); state.workouts = state.workouts.filter(workout => workout.source !== "demo"); saveState(); renderAll(); });
       $("#exportJson").addEventListener("click", exportJson);
       $("#exportTop").addEventListener("click", exportJson);
@@ -1553,10 +1391,7 @@
       $("#shareWorkout").addEventListener("click", async () => {
         if (!recentWorkout) return;
         const plan = Object.values(trainingPlan).find(item => item.key === recentWorkout.planKey);
-        const lines = (recentWorkout.exercises || []).map(exercise => {
-          const sets = exercise.sets?.map((set, index) => set ? `第${index + 1}组 ${set.weight}kg × ${set.reps}次` : null).filter(Boolean).join("；");
-          return `${exercise.name}：${sets || exercise.log || (exercise.done ? "已完成" : "未记录")}`;
-        });
+        const lines = (recentWorkout.exercises || []).map(exercise => `${exercise.name}：${exerciseRecordText(exercise)}`);
         const content = [`${formatFullDate(recentWorkout.date)} · ${plan?.title || "训练"}`, ...lines].join("\n");
         await shareOrDownload(`sirius-workout-${recentWorkout.date}.txt`, content, "text/plain;charset=utf-8");
       });
@@ -1580,11 +1415,10 @@
       console.assert(round(mean([74, 73.8]), 1) === 73.9, "平均值计算失败");
       console.assert(Object.keys(trainingPlan).length === 7, "训练周计划不完整");
       console.assert(PROGRAM_START_DATE === "2026-10-08", "计划起始日错误");
-      console.assert(trainingPlan[1].title === "上肢 A" && dailyDietPlans[trainingPlan[1].type].meals.length === 3, "周一日计划映射失败");
+      console.assert(trainingPlan[1].title === "上肢 A" && weeklyMenu[1].meals.length === 3 && weeklyMenu[6].meals.length === 2, "每周菜单映射失败");
       console.assert([1, 3, 5].every(day => trainingPlan[day].exercises.every(exercise => exercise[1].startsWith("4 ×"))), "力量组数应为每动作4组");
       console.assert(trainingPlan[3].exercises[3][0] === "坐姿悬垂举腿", "周三动作未更新");
-      const estimate = estimateMealText("海南鸡饭，米饭三分之二，加一份青菜", "午餐");
-      console.assert(estimate.protein >= 1.5 && estimate.veg >= 1 && estimate.calories > 400, "餐食估算失败");
+      console.assert(weekOrder.every(day => weeklyMenu[day].meals.length >= 2), "每周菜单有空缺");
     }
 
     syncToday();
